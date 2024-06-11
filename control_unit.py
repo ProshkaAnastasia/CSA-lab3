@@ -8,8 +8,8 @@ class ControlUnit:
     def __init__(self, data, code, in_buf, start):
         self.logger = logging.getLogger("machine_logger")
         self.logger.setLevel(logging.INFO)
-        file_handler = logging.FileHandler("log.txt", 'w')
-        formatter = logging.Formatter("%(levelname)s %(message)s")
+        file_handler = logging.FileHandler("log.txt", "w")
+        formatter = logging.Formatter("%(levelname)s | %(message)s")
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
 
@@ -19,13 +19,20 @@ class ControlUnit:
         self.code_memory = code
         self.data_path = DataPath(data, in_buf)
         self.active = False
-        self.int_state = {"Z": False, "N": False, "W": False, "I": True, "IA": False, "E": False}
+        self.int_state = {
+            "Z": False,
+            "N": False,
+            "W": False,
+            "I": True,
+            "IA": False,
+            "E": False,
+        }
         self.tick_value = 0
 
     def signal_latch_ip(self):
         self.IP = self.data_path.alu.result
 
-    def tick(self, value = 1):
+    def tick(self, value=1):
         self.tick_value += value
 
     def signal_read_command(self):
@@ -46,7 +53,7 @@ class ControlUnit:
         opcode = Opcode(int(instr[0:8], 2))
         code = f"0x{int(self.CR, 2):08X}"
         self.logger.info(
-            f"| counter: {(self.counter):6} | tick: {self.tick_value:6} | IP: {(self.IP):3} | instruction: {code:>10} | opcode: {opcode.name:>4} | PS: {self.data_path.hidden_registers[ps]}"
+            f"counter: {(self.counter):6} | tick: {self.tick_value:6} | IP: {(self.IP):3} | instruction: {code:>10} | opcode: {opcode.name:>4} | PS: {self.data_path.hidden_registers[ps]}"
         )
 
     def interrupt(self):
@@ -63,7 +70,7 @@ class ControlUnit:
             if self.data_path.in_buffer[1][i][0] > self.tick_value:
                 break
             index = i
-        self.data_path.in_buffer[1] = self.data_path.in_buffer[1][index : ]
+        self.data_path.in_buffer[1] = self.data_path.in_buffer[1][index:]
 
     def check_interruption(self):
         self.renew_input()

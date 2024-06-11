@@ -21,7 +21,14 @@ class DataPath:
             "dr": 0,
             "ar": 0,
             "sp": 0,
-            "ps": {"N": False, "Z": False, "W": False, "I": False, "IA": True, "E": False},
+            "ps": {
+                "N": False,
+                "Z": False,
+                "W": False,
+                "I": False,
+                "IA": True,
+                "E": False,
+            },
         }
         self.data_memory = data
         self.alu = ALU()
@@ -43,11 +50,10 @@ class DataPath:
         self.hidden_registers["dr"] = char
         if char == 0:
             self.hidden_registers["ps"]["E"] = True
-        
 
     def output(self, port):
         char = chr(self.hidden_registers["dr"])
-        if char != '\0':
+        if char != "\0":
             self.out_buffer[port].append(char)
 
     def print(self, arg):

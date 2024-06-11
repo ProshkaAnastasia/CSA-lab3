@@ -29,6 +29,7 @@ class Section(Enum):
     DATA = ".data"
     CODE = ".text"
 
+
 class Translator:
     def __init__(self):
         self.code = []
@@ -205,12 +206,10 @@ class Translator:
         return struct.pack(
             "BBBB", word_bytes[0], word_bytes[1], word_bytes[2], word_bytes[3]
         )
-    
+
     def process_int_vector(self, command):
         address = int(command["args"][0], 0)
-        return struct.pack(
-            ">I", address
-        )
+        return struct.pack(">I", address)
 
     def translate_stage_3(self):
         logging = ""
@@ -253,10 +252,8 @@ def main(source, target):
 
 
 if __name__ == "__main__":
-    #assert (
-    #    len(sys.argv) == 3
-    #), "Wrong arguments: translator.py <input_file> <target_file>"
-    #_, source, target = sys.argv
-    source = "./code/src/prob1.txt"
-    target = "./code/binary/prob1"
+    assert (
+        len(sys.argv) == 3
+    ), "Wrong arguments: translator.py <input_file> <target_file>"
+    _, source, target = sys.argv
     main(source, target)
