@@ -1,0 +1,17 @@
+0x0     --   0000000f   --   int_vector: handle_addr = 0xf
+0x1     --   10000001   --   ld:  r0 <- 0x1
+0x2     --   10000800   --   ld:  r1 <- 0x0
+0x3     --   10001002   --   ld:  r2 <- 0x2
+0x4     --   12c0c103   --   mod: r3 <- r2 % 3
+0x5     --   06024000   --   beq: if Z ip <- 0x9
+0x6     --   12c0c105   --   mod: r3 <- r2 % 5
+0x7     --   06024000   --   beq: if Z ip <- 0x9
+0x8     --   08028000   --   jmp: ip <- 0xa
+0x9     --   03e00002   --   add: r0 <- r0 + r2
+0xa     --   04808000   --   inc: r2 <- r2 + 1
+0xb     --   0cc08080   --   cmp: ps <- r2 - r1
+0xc     --   07010000   --   bne: if !Z ip <- 0x4
+0xd     --   14800000   --   print int r0
+0xe     --   0b000000   --   hlt
+0xf     --   0a800080   --   in:  r0 input 1
+0x10    --   11000000   --   iret

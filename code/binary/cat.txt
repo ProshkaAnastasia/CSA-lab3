@@ -1,0 +1,7 @@
+0x0     --   00000004   --   int_vector: handle_addr = 0x4
+0x1     --   18000000   --   nop
+0x2     --   17004000   --   je: if !E ip <- 0x1
+0x3     --   0b000000   --   hlt
+0x4     --   0a800080   --   in:  r0 input 1
+0x5     --   09800000   --   out: r0 output 0
+0x6     --   11000000   --   iret
