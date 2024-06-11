@@ -1,0 +1,374 @@
+in_source: |-
+    section .data
+    greeting: 
+        db 19, 'What is your name?\n'
+    hello: 
+        db 7, 'Hello, '
+    exclamation:
+        db 1, '!'
+    addr:
+        db 0
+    name:
+        db 0
+
+    section .text
+    vec int                 ; обработчик прерывания
+    _start:
+        mov r0, greeting    ; загружаем адрес запроса имени
+        call print          ; печатаем запрос имени пользователя
+    input:
+        nop                 ; ожидаем прерывания
+        jne input           ;
+        mov r0, hello       ; загружаем адрес приветствия
+        call print          ; печатаем приветствие
+        mov r0, name        ; загружаем адрес имени пользователя
+        call print          ; печатаем имя пользователя
+        mov r0, exclamation ; загружаем адрес !
+        call print          ; печатаем !
+        hlt                 ; останов
+
+    print:
+        ld r1, r0           ; загружаем длину строки
+        beq end             ; если длина равна 0, идем дальше
+        inc r0
+    loop:
+        ld r2, r0           ; получаем значение символа по текущему адресу
+        out r2, 0           ; выводим текущий символ
+        inc r0              ; увеличиваем адрес
+        dec r1              ; уменьшаем счетчик длины
+        bne loop
+    end:
+        ret
+
+    int:
+        mov r0, name        ; адрес начала строки, здесь лежит длина
+        inc r0              ; получаем адрес первого символа строки
+        ld r1, name         ; загружаем длину строки
+        add r0, r0, r1      ; получаем адрес следующего вводимого символа
+        in r2, 1            ; вводим символ
+        inc r1              ; увеличиваем длину
+        st r2, r0           ; сохраняем введенный символ
+        st r1, name         ; сохраняем новую длину
+        iret                ; выходим из прерывания
+in_stdin: |-
+    (1, 'A')
+    (2, 'n')
+    (3, 'a')
+    (4, 's')
+    (5, 't')
+    (6, 'a')
+    (7, 's')
+    (8, 'i')
+    (9, 'a')
+out_data: |-
+  [19, 87, 104, 97, 116, 32, 105, 115, 32, 121, 111, 117, 114, 32, 110, 97, 109, 101, 63, 10, 7, 72, 101, 108, 108, 111, 44, 32, 1, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+out_code: |-
+  ['00000000000000000000000000010101', '00000010100000000000000000000000', '00010101000000110000000000000000', '00011000000000000000000000000000', '00010111000000001100000000000000', '00000010100000000000101000000000', '00010101000000110000000000000000', '00000010100000000000111110000000', '00010101000000110000000000000000', '00000010100000000000111000000000', '00010101000000110000000000000000', '00001011000000000000000000000000', '00010000100000000000100000000000', '00000110000001010000000000000000', '00000100100000000000000000000000', '00010000100000000001000000000000', '00001001100000001000000000000000', '00000100100000000000000000000000', '00000101100000000100000000000000', '00000111000000111100000000000000', '00010110000000000000000000000000', '00000010100000000000111110000000', '00000100100000000000000000000000', '00010000000000000000100000011111', '00000011111000000000000000000001', '00001010100000001000000010000000', '00000100100000000100000000000000', '00100000100000000001000000000000', '00100000000000000000100000011111', '00010001000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000', '00000000000000000000000000000000']
+out_start: |-
+  1
+out_stdout: |
+  What is your name?
+  Hello, Anastasia!
+out_log: |
+    INFO | counter:      1 | tick:      1 | IP:  21 | instruction: 0x02800000 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      2 | tick:      3 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      3 | tick:      6 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      4 | tick:     10 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      5 | tick:     13 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      6 | tick:     16 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      7 | tick:     19 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      8 | tick:     23 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:      9 | tick:     27 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     10 | tick:     33 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     11 | tick:     35 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     12 | tick:     38 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     13 | tick:     42 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     14 | tick:     45 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     15 | tick:     48 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     16 | tick:     51 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     17 | tick:     55 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     18 | tick:     59 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     19 | tick:     65 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     20 | tick:     67 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     21 | tick:     70 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     22 | tick:     74 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     23 | tick:     77 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     24 | tick:     80 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     25 | tick:     83 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     26 | tick:     87 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     27 | tick:     91 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     28 | tick:     97 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     29 | tick:     99 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     30 | tick:    102 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     31 | tick:    106 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     32 | tick:    109 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     33 | tick:    112 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     34 | tick:    115 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     35 | tick:    119 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     36 | tick:    123 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     37 | tick:    129 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     38 | tick:    131 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     39 | tick:    134 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     40 | tick:    138 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     41 | tick:    141 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     42 | tick:    144 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     43 | tick:    147 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     44 | tick:    151 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     45 | tick:    155 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     46 | tick:    161 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     47 | tick:    163 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     48 | tick:    166 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     49 | tick:    170 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     50 | tick:    173 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     51 | tick:    176 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     52 | tick:    179 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     53 | tick:    183 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     54 | tick:    187 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     55 | tick:    193 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     56 | tick:    195 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     57 | tick:    198 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     58 | tick:    202 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     59 | tick:    205 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     60 | tick:    208 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     61 | tick:    211 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     62 | tick:    215 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     63 | tick:    219 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     64 | tick:    225 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     65 | tick:    227 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     66 | tick:    230 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     67 | tick:    234 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     68 | tick:    237 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     69 | tick:    240 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     70 | tick:    243 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     71 | tick:    247 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     72 | tick:    251 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     73 | tick:    257 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     74 | tick:    259 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     75 | tick:    262 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     76 | tick:    266 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     77 | tick:    269 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     78 | tick:    272 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     79 | tick:    275 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     80 | tick:    279 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     81 | tick:    283 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     82 | tick:    289 | IP:  21 | instruction: 0x11000000 | opcode: IRET | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     83 | tick:    291 | IP:  22 | instruction: 0x02800F80 | opcode:  MOV | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     84 | tick:    294 | IP:  23 | instruction: 0x04800000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     85 | tick:    298 | IP:  24 | instruction: 0x1000081F | opcode:   LD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     86 | tick:    301 | IP:  25 | instruction: 0x03E00001 | opcode:  ADD | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': False}
+    INFO | counter:     87 | tick:    304 | IP:  26 | instruction: 0x0A808080 | opcode:   IN | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': True}
+    INFO | counter:     88 | tick:    307 | IP:  27 | instruction: 0x04804000 | opcode:  INC | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': True}
+    INFO | counter:     89 | tick:    311 | IP:  28 | instruction: 0x20801000 | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': True}
+    INFO | counter:     90 | tick:    315 | IP:  29 | instruction: 0x2000081F | opcode:   ST | PS: {'Z': False, 'N': False, 'W': False, 'I': True, 'IA': False, 'E': True}
+    INFO | counter:     91 | tick:    322 | IP:   2 | instruction: 0x11000000 | opcode: IRET | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     92 | tick:    324 | IP:  12 | instruction: 0x15030000 | opcode: CALL | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     93 | tick:    328 | IP:  13 | instruction: 0x10800800 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     94 | tick:    330 | IP:  14 | instruction: 0x06050000 | opcode:  BEQ | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     95 | tick:    333 | IP:  15 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     96 | tick:    337 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     97 | tick:    340 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     98 | tick:    343 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:     99 | tick:    346 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    100 | tick:    348 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    101 | tick:    352 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    102 | tick:    355 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    103 | tick:    358 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    104 | tick:    361 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    105 | tick:    363 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    106 | tick:    367 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    107 | tick:    370 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    108 | tick:    373 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    109 | tick:    376 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    110 | tick:    378 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    111 | tick:    382 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    112 | tick:    385 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    113 | tick:    388 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    114 | tick:    391 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    115 | tick:    393 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    116 | tick:    397 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    117 | tick:    400 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    118 | tick:    403 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    119 | tick:    406 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    120 | tick:    408 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    121 | tick:    412 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    122 | tick:    415 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    123 | tick:    418 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    124 | tick:    421 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    125 | tick:    423 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    126 | tick:    427 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    127 | tick:    430 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    128 | tick:    433 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    129 | tick:    436 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    130 | tick:    438 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    131 | tick:    442 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    132 | tick:    445 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    133 | tick:    448 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    134 | tick:    451 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    135 | tick:    453 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    136 | tick:    457 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    137 | tick:    460 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    138 | tick:    463 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    139 | tick:    466 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    140 | tick:    468 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    141 | tick:    472 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    142 | tick:    475 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    143 | tick:    478 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    144 | tick:    481 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    145 | tick:    483 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    146 | tick:    487 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    147 | tick:    490 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    148 | tick:    493 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    149 | tick:    496 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    150 | tick:    498 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    151 | tick:    502 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    152 | tick:    505 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    153 | tick:    508 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    154 | tick:    511 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    155 | tick:    513 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    156 | tick:    517 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    157 | tick:    520 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    158 | tick:    523 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    159 | tick:    526 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    160 | tick:    528 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    161 | tick:    532 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    162 | tick:    535 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    163 | tick:    538 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    164 | tick:    541 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    165 | tick:    543 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    166 | tick:    547 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    167 | tick:    550 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    168 | tick:    553 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    169 | tick:    556 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    170 | tick:    558 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    171 | tick:    562 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    172 | tick:    565 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    173 | tick:    568 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    174 | tick:    571 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    175 | tick:    573 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    176 | tick:    577 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    177 | tick:    580 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    178 | tick:    583 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    179 | tick:    586 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    180 | tick:    588 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    181 | tick:    592 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    182 | tick:    595 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    183 | tick:    598 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    184 | tick:    601 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    185 | tick:    603 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    186 | tick:    607 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    187 | tick:    610 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    188 | tick:    613 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    189 | tick:    616 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    190 | tick:    618 | IP:  20 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    191 | tick:    620 | IP:   3 | instruction: 0x16000000 | opcode:  RET | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    192 | tick:    621 | IP:   4 | instruction: 0x18000000 | opcode:  NOP | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    193 | tick:    622 | IP:   5 | instruction: 0x1700C000 | opcode:  JNE | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    194 | tick:    624 | IP:   6 | instruction: 0x02800A00 | opcode:  MOV | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    195 | tick:    626 | IP:  12 | instruction: 0x15030000 | opcode: CALL | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    196 | tick:    630 | IP:  13 | instruction: 0x10800800 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    197 | tick:    632 | IP:  14 | instruction: 0x06050000 | opcode:  BEQ | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    198 | tick:    635 | IP:  15 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    199 | tick:    639 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    200 | tick:    642 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    201 | tick:    645 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    202 | tick:    648 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    203 | tick:    650 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    204 | tick:    654 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    205 | tick:    657 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    206 | tick:    660 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    207 | tick:    663 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    208 | tick:    665 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    209 | tick:    669 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    210 | tick:    672 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    211 | tick:    675 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    212 | tick:    678 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    213 | tick:    680 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    214 | tick:    684 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    215 | tick:    687 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    216 | tick:    690 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    217 | tick:    693 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    218 | tick:    695 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    219 | tick:    699 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    220 | tick:    702 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    221 | tick:    705 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    222 | tick:    708 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    223 | tick:    710 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    224 | tick:    714 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    225 | tick:    717 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    226 | tick:    720 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    227 | tick:    723 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    228 | tick:    725 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    229 | tick:    729 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    230 | tick:    732 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    231 | tick:    735 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    232 | tick:    738 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    233 | tick:    740 | IP:  20 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    234 | tick:    742 | IP:   7 | instruction: 0x16000000 | opcode:  RET | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    235 | tick:    744 | IP:   8 | instruction: 0x02800F80 | opcode:  MOV | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    236 | tick:    746 | IP:  12 | instruction: 0x15030000 | opcode: CALL | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    237 | tick:    750 | IP:  13 | instruction: 0x10800800 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    238 | tick:    752 | IP:  14 | instruction: 0x06050000 | opcode:  BEQ | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    239 | tick:    755 | IP:  15 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    240 | tick:    759 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    241 | tick:    762 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    242 | tick:    765 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    243 | tick:    768 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    244 | tick:    770 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    245 | tick:    774 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    246 | tick:    777 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    247 | tick:    780 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    248 | tick:    783 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    249 | tick:    785 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    250 | tick:    789 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    251 | tick:    792 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    252 | tick:    795 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    253 | tick:    798 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    254 | tick:    800 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    255 | tick:    804 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    256 | tick:    807 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    257 | tick:    810 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    258 | tick:    813 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    259 | tick:    815 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    260 | tick:    819 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    261 | tick:    822 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    262 | tick:    825 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    263 | tick:    828 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    264 | tick:    830 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    265 | tick:    834 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    266 | tick:    837 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    267 | tick:    840 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    268 | tick:    843 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    269 | tick:    845 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    270 | tick:    849 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    271 | tick:    852 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    272 | tick:    855 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    273 | tick:    858 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    274 | tick:    860 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    275 | tick:    864 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    276 | tick:    867 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    277 | tick:    870 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    278 | tick:    873 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    279 | tick:    875 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    280 | tick:    879 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    281 | tick:    882 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    282 | tick:    885 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    283 | tick:    888 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    284 | tick:    890 | IP:  15 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    285 | tick:    894 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    286 | tick:    897 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    287 | tick:    900 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    288 | tick:    903 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    289 | tick:    905 | IP:  20 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    290 | tick:    907 | IP:   9 | instruction: 0x16000000 | opcode:  RET | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    291 | tick:    909 | IP:  10 | instruction: 0x02800E00 | opcode:  MOV | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    292 | tick:    911 | IP:  12 | instruction: 0x15030000 | opcode: CALL | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    293 | tick:    915 | IP:  13 | instruction: 0x10800800 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    294 | tick:    917 | IP:  14 | instruction: 0x06050000 | opcode:  BEQ | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    295 | tick:    920 | IP:  15 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    296 | tick:    924 | IP:  16 | instruction: 0x10801000 | opcode:   LD | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    297 | tick:    927 | IP:  17 | instruction: 0x09808000 | opcode:  OUT | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    298 | tick:    930 | IP:  18 | instruction: 0x04800000 | opcode:  INC | PS: {'N': False, 'Z': False, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    299 | tick:    933 | IP:  19 | instruction: 0x05804000 | opcode:  DEC | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    300 | tick:    935 | IP:  20 | instruction: 0x0703C000 | opcode:  BNE | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    301 | tick:    937 | IP:  11 | instruction: 0x16000000 | opcode:  RET | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
+    INFO | counter:    302 | tick:    939 | IP:  12 | instruction: 0x0B000000 | opcode:  HLT | PS: {'N': False, 'Z': True, 'W': False, 'I': False, 'IA': True, 'E': True}
